@@ -1,58 +1,14 @@
 import * as React from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { Header, Container, Body, Title } from 'native-base';
 import { commonBackground, commonBlue, statusbarColor } from '../styles';
 import { TextInput, Button } from 'react-native-paper';
 import { Spinner } from './../components/Spinner';
-import { signupURL } from './../url.json';
-import AsynStorage from '@react-native-community/async-storage';
-import * as registerToken from './../actions/registerToken';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 
 class SignUp extends React.Component {
     state = {
         username: '',
         password: '',
-    };
-
-    storeData = async (token) => {
-        try {
-            await AsynStorage.setItem('token', token);
-        } catch (e) {}
-    };
-
-    sendData = () => {
-        const { username, password } = this.state;
-
-        if (username.length < 1 || password.length < 6) {
-            return Alert.alert('Invalid values');
-        }
-
-        fetch(signupURL, {
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password,
-            }),
-        })
-            .then((res) => {
-                console.log(res.status);
-                if (res.status !== 200) {
-                    throw new Error();
-                }
-
-                return res.json();
-            })
-            .then((json) => {
-                this.storeData(json.token);
-                this.props.actions.regsiterToken(json.token);
-            })
-            .catch((e) => {Alert.alert('Something went wrong'); console.log(e)});
     };
 
     updateButton = () => {
@@ -69,14 +25,13 @@ class SignUp extends React.Component {
                         backgroundColor: commonBlue,
                     }}
                     onPress={this.sendData}>
-                    Create Account
+                    Log In
                 </Button>
             );
         }
     };
 
     render() {
-        console.log(this.props.actions);
         const { container } = styles;
         return (
             <Container style={{ backgroundColor: commonBackground }}>
@@ -84,7 +39,7 @@ class SignUp extends React.Component {
                     style={{ backgroundColor: commonBlue }}
                     androidStatusBarColor={statusbarColor}>
                     <Body>
-                        <Title style={{ color: '#fff' }}>Create Account</Title>
+                        <Title style={{ color: '#fff' }}>Log In</Title>
                     </Body>
                 </Header>
                 <View style={container}>
@@ -121,8 +76,8 @@ class SignUp extends React.Component {
                     {this.updateButton()}
                     <Button
                         compact={true}
-                        onPress={() => this.props.navigation.navigate('login')}>
-                        Already have an account? Log In.
+                        onPress={() => this.props.navigation.goBack()}>
+                        New User? Create Account.
                     </Button>
                 </View>
             </Container>
@@ -138,14 +93,4 @@ const styles = StyleSheet.create({
     },
 });
 
-const ActionCreators = Object.assign({}, registerToken);
-
-const mapDispatchToProps = (dispatch) => ({
-    actions: bindActionCreators(ActionCreators, dispatch),
-});
-
-const mapStateTopProps = (state) => ({
-    token: state.token.token,
-});
-
-export default connect(mapStateTopProps, mapDispatchToProps)(SignUp);
+export default SignUp;

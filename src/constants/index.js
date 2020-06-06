@@ -1,0 +1,3 @@
+const REGISTER_TOKEN = 'REGISTER_TOKEN';
+
+export { REGISTER_TOKEN };
