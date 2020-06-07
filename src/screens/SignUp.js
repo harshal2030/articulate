@@ -50,9 +50,12 @@ class SignUp extends React.Component {
             })
             .then((json) => {
                 this.storeData(json.token);
-                this.props.actions.regsiterToken(json.token);
+                this.props.actions.registerToken(json.token);
             })
-            .catch((e) => {Alert.alert('Something went wrong'); console.log(e)});
+            .catch((e) => {
+                Alert.alert('Something went wrong');
+                console.log(e);
+            });
     };
 
     updateButton = () => {

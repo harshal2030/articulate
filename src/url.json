@@ -1,3 +1,8 @@
 {
-    "signupURL": "http://192.168.43.25:3000/users/"
+    "signupURL": "http://192.168.43.25:3000/users/",
+    "loginURL": "http://192.168.43.25:3000/users/login",
+    "postURL": "http://192.168.43.25:3000/article",
+    "imgURL": "http://192.168.43.25:3000/posts",
+    "avatarURL": "http://192.168.43.25:3000/avatar",
+    "logoutURL": "http://192.168.43.25:3000/users/logout"
 }

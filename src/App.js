@@ -9,7 +9,9 @@ import { Spinner } from './components/Spinner';
 import SignUp from './screens/SignUp';
 import LogIn from './screens/LogIn';
 
-import Home from './screens/Home';
+import Home from './screens/Bottom';
+import PostArticle from './screens/PostArticle';
+import FullScreen from './screens/FullScreen';
 
 const Stack = createStackNavigator();
 
@@ -21,7 +23,7 @@ class App extends React.Component {
     check = async () => {
         try {
             const token = await AsyncStorage.getItem('token');
-            this.props.actions.regsiterToken(token);
+            this.props.actions.registerToken(token);
             this.setState({ loading: false });
         } catch (e) {
             console.log(e);
@@ -46,6 +48,8 @@ class App extends React.Component {
                     ) : (
                         <>
                             <Stack.Screen name="home" component={Home} />
+                            <Stack.Screen name="post" component={PostArticle} />
+                            <Stack.Screen name="full" component={FullScreen} />
                         </>
                     )}
                 </Stack.Navigator>

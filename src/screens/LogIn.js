@@ -1,14 +1,51 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Header, Container, Body, Title } from 'native-base';
 import { commonBackground, commonBlue, statusbarColor } from '../styles';
 import { TextInput, Button } from 'react-native-paper';
 import { Spinner } from './../components/Spinner';
+import { loginURL } from './../url.json';
+import * as registerToken from './../actions/registerToken';
+import AsyncStorage from '@react-native-community/async-storage';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
-class SignUp extends React.Component {
+class LogIn extends React.Component {
     state = {
         username: '',
         password: '',
+    };
+
+    storeData = async (token) => {
+        try {
+            await AsyncStorage.setItem('token', token);
+        } catch (e) {}
+    };
+
+    sendData = () => {
+        fetch(loginURL, {
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: this.state.username,
+                password: this.state.password,
+            }),
+        })
+            .then((res) => {
+                if (res.status !== 200) {
+                    throw new Error();
+                }
+
+                return res.json();
+            })
+            .then((json) => {
+                this.storeData(json.token);
+                this.props.actions.registerToken(json.token);
+            })
+            .catch(() => Alert.alert('Invalid Credentials'));
     };
 
     updateButton = () => {
@@ -93,4 +130,14 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SignUp;
+const ActionCreators = Object.assign({}, registerToken);
+
+const mapDispatchToProps = (dispatch) => ({
+    actions: bindActionCreators(ActionCreators, dispatch),
+});
+
+const mapStateToProps = (state) => ({
+    token: state.token.token,
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogIn);
